@@ -1,20 +1,7 @@
 {
   "files": [],
   "compilerOptions": {
-    "target": "es6", // 사용할 ECMAScript의 버전을 설정합니다.
-    "module": "commonjs", // 모듈 시스템을 설정합니다.
-    "allowJs": true, // JavaScript 파일을 허용합니다.
-    "checkJs": false, // JavaScript 파일을 검사하지 않습니다.
-    "jsx": "react", // React JSX 구문을 허용합니다.
-    "strict": true, // 모든 엄격한 유형 검사 옵션을 활성화합니다.
-    "esModuleInterop": true, // ES 모듈 호환성을 제공합니다.
-    "skipLibCheck": true, // 라이브러리 파일 검사를 건너뜁니다.
-    "resolveJsonModule": true, // JSON 모듈을 허용합니다.
-    "moduleResolution": "node", // 모듈 해석을 Node.js 방식으로 합니다.
-    "baseUrl": "./", // 기본 디렉토리를 설정합니다.
-    "paths": {
-      "*": ["src/*"] // 경로 매핑을 설정합니다.
-    }
+  "types":["vite/client"]
   },
   "references": [
     {

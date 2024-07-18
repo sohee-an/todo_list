@@ -34,6 +34,9 @@ devDependencies:
   '@types/firebase':
     specifier: ^3.2.1
     version: 3.2.1
+  '@types/node':
+    specifier: ^20.14.11
+    version: 20.14.11
   '@types/react':
     specifier: ^18.3.3
     version: 18.3.3
@@ -72,7 +75,7 @@ devDependencies:
     version: 5.5.3
   vite:
     specifier: ^5.3.4
-    version: 5.3.4
+    version: 5.3.4(@types/node@20.14.11)
 
 packages:
 
@@ -1293,7 +1296,7 @@ packages:
       vite: ^4 || ^5
     dependencies:
       '@swc/core': 1.6.13
-      vite: 5.3.4
+      vite: 5.3.4(@types/node@20.14.11)
     transitivePeerDependencies:
       - '@swc/helpers'
     dev: true
@@ -2659,10 +2662,10 @@ packages:
       '@types/eslint': 8.56.10
       eslint: 8.57.0
       rollup: 2.79.1
-      vite: 5.3.4
+      vite: 5.3.4(@types/node@20.14.11)
     dev: false
 
-  /vite@5.3.4:
+  /vite@5.3.4(@types/node@20.14.11):
     resolution: {integrity: sha512-Cw+7zL3ZG9/NZBB8C+8QbQZmR54GwqIz+WMI4b3JgdYJvX+ny9AjJXqkGQlDXSXRP9rP0B4tbciRMOVEKulVOA==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -2690,6 +2693,7 @@ packages:
       terser:
         optional: true
     dependencies:
+      '@types/node': 20.14.11
       esbuild: 0.21.5
       postcss: 8.4.39
       rollup: 4.18.1
