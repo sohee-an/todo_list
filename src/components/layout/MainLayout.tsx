@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import  { useState, } from 'react';
+import { Outlet } from 'react-router-dom';
 
-type LayoutProps = {
-  children: React.ReactNode;
-};
 
-const Layout = ({ children }: LayoutProps) => {
+
+
+const MainLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const toggleSidebar = () => {
@@ -33,10 +33,10 @@ const Layout = ({ children }: LayoutProps) => {
         </div>
       </nav>
       <main className="flex-grow p-4 bg-gray-100">
-        {children}
+        <Outlet/>
       </main>
     </div>
   );
 };
 
-export default Layout;
+export default MainLayout;

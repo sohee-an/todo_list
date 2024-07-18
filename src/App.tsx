@@ -1,14 +1,18 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/home/Home';
-import Layout from './components/layout/Layout';
+import MainLayout from './components/layout/MainLayout';
+import AuthLayout from './components/layout/AuthLayout';
 import MyTodo from './pages/MyTodo';
 import Login from './pages/auth/Login';
 import { app,auth } from './config/firebase'
-import { doc, getDoc } from 'firebase/firestore';
+
 
 import { useEffect, useState } from 'react';
 import { getDatabase, ref, get } from 'firebase/database';
 import Register from './pages/auth/Register';
+
+
+
 
 function App() {
   const db = getDatabase(app);
@@ -27,14 +31,16 @@ function App() {
  
   return (
     <BrowserRouter>
-      <Layout>
-        <Routes>
-        <Route path="/register" element={<Register />} />
+    <Routes>
+     <Route element={<MainLayout />}>
           <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
           <Route path="/my" element={<MyTodo />} />
+        </Route>
+        <Route element={<AuthLayout />}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+        </Route>
         </Routes>
-      </Layout>
     </BrowserRouter>
   );
 }
