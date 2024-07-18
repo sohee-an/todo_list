@@ -2,6 +2,7 @@ import Input from '../../components/share/Input';
 import { getEmailUserFormSchema } from '../../validations/user/emailUserFormValidation';
 import { useForm, SubmitHandler,FieldValues } from 'react-hook-form';
 import { handleLogin } from '../../api/auth/auth';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const {
@@ -9,13 +10,13 @@ const Login = () => {
     handleSubmit,
     formState: { errors },
   } = useForm({ resolver: getEmailUserFormSchema() });
-
-    
- 
+ const navigate = useNavigate();
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     const {email,password}=data
-   handleLogin(email,password)
+    handleLogin(email, password).then(() => {
+     navigate('/')
+   })
   };
 
   return (
@@ -37,8 +38,9 @@ const Login = () => {
             placeholder="비밀번호를 입력해주세요"
             errors={errors}
           />
-          <div className='flex items-center justify-center '>
+          <div className='flex items-center justify-center gap-2'>
             <button className='bg-gray-200   p-2 mt-8 rounded-lg text-gray-500' >로그인</button>
+          <button className='bg-gray-200   p-2 mt-8 rounded-lg text-gray-500' >회원가입</button>
           </div>
         </form>
       </div>

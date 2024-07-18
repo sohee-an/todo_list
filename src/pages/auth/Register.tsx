@@ -3,6 +3,7 @@ import Input from '../../components/share/Input';
 import { getEmailUserFormSchema } from '../../validations/user/emailUserFormValidation';
 import { useForm, SubmitHandler,FieldValues } from 'react-hook-form';
 import { Signup } from '../../api/auth/auth';
+import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
   const {
@@ -11,9 +12,13 @@ const Register = () => {
     formState: { errors },
   } = useForm({ resolver: getEmailUserFormSchema() });
 
+  const navigate = useNavigate();
+
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     const {email,password}=data
-    Signup(email,password)
+    Signup(email, password).then(() => {
+      navigate('/')
+    })
   };
 
  
