@@ -1,9 +1,8 @@
-import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
+
 import Input from '../../components/share/Input';
 import { getEmailUserFormSchema } from '../../validations/user/emailUserFormValidation';
 import { useForm, SubmitHandler,FieldValues } from 'react-hook-form';
-import { addDoc, collection } from 'firebase/firestore';
-import { db } from '../../config/firebase';
+import { Signup } from '../../api/auth/auth';
 
 const Register = () => {
   const {
@@ -18,16 +17,7 @@ const Register = () => {
   };
 
  
-  async function Signup(email:string, password:string) {
-    try {
-      const auth = getAuth();
-      const user = await createUserWithEmailAndPassword(auth, email, password);
-      console.log('user',user)
-    } catch (error) {
-       console.error(error);
-    }
-  }
-   
+ 
 
 
   return (

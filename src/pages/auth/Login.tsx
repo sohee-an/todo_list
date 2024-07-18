@@ -1,7 +1,7 @@
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import Input from '../../components/share/Input';
 import { getEmailUserFormSchema } from '../../validations/user/emailUserFormValidation';
 import { useForm, SubmitHandler,FieldValues } from 'react-hook-form';
+import { handleLogin } from '../../api/auth/auth';
 
 const Login = () => {
   const {
@@ -11,19 +11,7 @@ const Login = () => {
   } = useForm({ resolver: getEmailUserFormSchema() });
 
     
- const handleLogin = async (email:string, password:string) => {
-  try {
-    const auth = getAuth();
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    const token = await userCredential.user.getIdToken();
-    localStorage.setItem('token', token);
-    // console.log('Token stored:', token);
-    // Redirect to home or another page if needed
-  } catch (error) {
-    alert('비밀번호 혹은 아이디가 틀립니다.')
-    console.error('Error logging in:', error);
-  }
-};
+ 
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     const {email,password}=data
