@@ -11,15 +11,20 @@ const Login = () => {
   } = useForm({ resolver: getEmailUserFormSchema() });
 
     
-    async function handleLogin(email:string, password:string) {
+ const handleLogin = async (email:string, password:string) => {
+  try {
     const auth = getAuth();
-    try {
-      const user = await signInWithEmailAndPassword(auth, email, password);
-      console.log(user);
-    } catch (error) {
-      console.error(error);
-    }
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const token = await userCredential.user.getIdToken();
+    localStorage.setItem('token', token);
+    // console.log('Token stored:', token);
+    // Redirect to home or another page if needed
+  } catch (error) {
+    alert('비밀번호 혹은 아이디가 틀립니다.')
+    console.error('Error logging in:', error);
   }
+};
+
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     const {email,password}=data
    handleLogin(email,password)
@@ -27,8 +32,7 @@ const Login = () => {
 
   return (
     <div className=" min-h-[100%] flex items-center justify-center bg-gray-100">
-      <div className="w-[30rem] bg-white h-[18rem] rounded-lg shadow-lg px-8">
-        
+      <div className="w-[30rem] bg-white h-[18rem] rounded-lg shadow-lg px-8"> 
         <div className='m-6 flex items-center justify-center font-bold '>로그인</div>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Input

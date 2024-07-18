@@ -1,15 +1,24 @@
-import  { useState, } from 'react';
-import { Outlet } from 'react-router-dom';
+import  { useEffect, useState, } from 'react';
+import { Outlet, useNavigate } from 'react-router-dom';
 
 
 
 
 const MainLayout = () => {
+   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
+    
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login');
+    }
+  }, [navigate]);
 
   return (
     <div className="flex min-h-screen">

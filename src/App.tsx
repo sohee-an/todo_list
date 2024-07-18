@@ -19,8 +19,7 @@ function App() {
   const[isLoading,setIsLoading]=useState(false)
   
     const init = async () => {
-    // 최초 인증 상태가 완료될 때 실행되는 Promise를 return
-    // Firebase가 쿠키와 토큰을 읽고 백엔드와 소통해서 로그인 여부를 확인하는 동안 기다림
+
     await auth.authStateReady();
     setIsLoading(false);
   };
