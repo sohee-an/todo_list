@@ -22,7 +22,7 @@ const firebaseConfig = {
 
 
 
-// firebase.initializeApp(firebaseConfig);
+
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app) // Firestore 인스턴스를 가져옵니다.
