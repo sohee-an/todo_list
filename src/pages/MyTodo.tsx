@@ -16,7 +16,7 @@ import { db } from '../config/firebase';
 import Category from '../components/MyTodo/Category';
 
 type TCategory = {
-  cid: string;
+  id: string;
   memo: string;
   name: string;
   userid: string;
@@ -28,43 +28,51 @@ const TodoList = () => {
   const [selectedCategory, setSelectedCategory] = useState<TCategory>({});
   const [refetch, setRefetch] = useState(false);
 
-  const handleCategoryClick = (category: any) => {
-    setSelectedCategory(category);
-    setIsPanelVisible(true);
+ const handleCategoryClick = (category: any) => {
+  const updatedCategory = {
+    ...category,
+    id: category.cid,
+   
   };
+  setSelectedCategory(updatedCategory);
+  setIsPanelVisible(true);
+};
 
   const handlePanelClose = () => {
     setIsPanelVisible(false);
   };
 
- const handleSave = async (
-   updateTitle: string,
-   updateMemo: string,
-   cid: string
- ) => {
-   const userId = localStorage.getItem('userId');
-   if (!userId) {
-     return;
-   }
+  const handleCategorySave = async (
+    updateTitle: string,
+    updateMemo: string,
+    id: string
+  ) => {
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+      return;
+    }
 
-   const docRef = doc(db, 'todos', userId);
-   const docSnap = await getDoc(docRef);
+    console.log('up', updateTitle);
+    console.log('memo', updateMemo);
 
-   if (docSnap.exists()) {
-     const data = docSnap.data();
-     const categoryIndex = data.todos.findIndex((cat: any) => cat.cid === cid);
+    const docRef = doc(db, 'todos', userId);
+    const docSnap = await getDoc(docRef);
 
-     if (categoryIndex > -1) {
-       data.todos[categoryIndex].name = updateTitle;
-       data.todos[categoryIndex].memo = updateMemo;
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      const categoryIndex = data.todos.findIndex((cat: any) => cat.cid === id);
 
-       await updateDoc(docRef, {
-         todos: data.todos,
-       });
-       setRefetch((pre) => !pre);
-     }
-   }
- };
+      if (categoryIndex > -1) {
+        data.todos[categoryIndex].title = updateTitle;
+        data.todos[categoryIndex].memo = updateMemo;
+
+        await updateDoc(docRef, {
+          todos: data.todos,
+        });
+        setRefetch((pre) => !pre);
+      }
+    }
+  };
   useEffect(() => {
     const fetchTestValue = async () => {
       const userId = localStorage.getItem('userId');
@@ -100,7 +108,7 @@ const TodoList = () => {
     const newCategory = {
       userid: userId,
       cid: uid(),
-      name: '카테고리1',
+      title: '카테고리1',
       memo: '메모',
     };
 
@@ -147,10 +155,12 @@ const TodoList = () => {
           ))}
       </div>
       <SidePanel
+        formTitle="카테고리 수정"
         isVisible={isPanelVisible}
         onClose={handlePanelClose}
         category={selectedCategory}
-        onSave={handleSave}
+        onSave={handleCategorySave}
+        setSelectedTodo={false}
       />
     </div>
   );

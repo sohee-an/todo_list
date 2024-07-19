@@ -1,29 +1,43 @@
-import  { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 type Props = {
   isVisible: boolean;
+  formTitle: string;
+  setSelectedTodo: boolean;
   onClose: () => void;
   category: {
-    cid: string;
+    id: string;
     memo: string;
-    name: string;
-    userid: string;
-  },
-  onSave: (title:string,memo:string,cid:string) => void;
-}
+    title: string;
+    userid?: string;
+  };
+  onSave?: (title: string, memo: string, cid: string) => void;
+  onTodoSave?:(title:string,memo:string,cid:string)=>void
+};
 
-const SidePanel = ({ isVisible, onClose, category, onSave }: Props) => {
-  const [title, setTitle] = useState(category.name);
+const SidePanel = ({
+  formTitle,
+  isVisible,
+  onClose,
+  category,
+  setSelectedTodo,
+  onSave,
+  onTodoSave,
+}: Props) => {
+  const [title, setTitle] = useState(category.title);
   const [memo, setMemo] = useState(category.memo);
 
- 
-
   useEffect(() => {
-    setTitle(category.name);
+    setTitle(category.title);
   }, [category]);
 
   const handleSave = () => {
-    onSave(title, memo, category.cid);
+    if (setSelectedTodo) {
+      onTodoSave && onTodoSave(title, memo, category.id);
+    } else {
+      onSave && onSave(title, memo, category.id);
+    }
+
     onClose();
   };
 
@@ -34,7 +48,7 @@ const SidePanel = ({ isVisible, onClose, category, onSave }: Props) => {
       }`}
     >
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold">카테고리 수정</h2>
+        <h2 className="text-xl font-bold"> {formTitle}</h2>
         <button onClick={onClose} className="text-gray-600 hover:text-gray-800">
           X
         </button>
@@ -52,7 +66,7 @@ const SidePanel = ({ isVisible, onClose, category, onSave }: Props) => {
           rows={4}
           value={memo}
           placeholder="메모"
-          onChange={(e)=>setMemo(e.target.value)}
+          onChange={(e) => setMemo(e.target.value)}
           className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-opacity-50"
         />
       </div>
