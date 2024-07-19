@@ -1,18 +1,28 @@
+import { ref, set } from 'firebase/database';
+import { uid } from 'uid';
+import { db } from '../../config/firebase';
+import { addDoc, collection, doc, setDoc } from 'firebase/firestore';
+
 type Props = {
   name: string;
-  color: string;
+  // color: string;
+  onClick: () => void;
 };
 
-const CategoryButton = ({ name, color }: Props) => {
+const CategoryButton = ({ name, onClick }: Props) => {
+  
+
+ 
+
   return (
-    <div>
+   
       <button
-        className={`mb-4 mr-2 bg-gray-400 text-${color}-200 px-3 py-1 rounded-full`}
+        onClick={onClick}
+        className={`mb-4 mr-2 bg-gray-400 text-black px-3 py-1 rounded-full`}
       >
         {name}
       </button>
-      <button>+</button>
-    </div>
+    
   );
 };
 

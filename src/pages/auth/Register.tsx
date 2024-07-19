@@ -19,6 +19,7 @@ const Register = () => {
     Signup(email, password).then(() => {
       navigate('/')
     })
+    
   };
 
  

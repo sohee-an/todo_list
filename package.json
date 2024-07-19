@@ -16,6 +16,7 @@
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.52.1",
     "react-router-dom": "^6.25.0",
+    "uid": "^2.0.2",
     "vite-plugin-eslint": "^1.8.1",
     "yup": "^1.4.0"
   },
