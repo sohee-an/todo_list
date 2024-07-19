@@ -37,13 +37,34 @@ const TodoList = () => {
     setIsPanelVisible(false);
   };
 
-  const handleSave = (updateTitle: string, updateMemo: string, cid: string) => {
-    // setSelectedCategory({
-    //   name: updateTitle,
-    //   memo: updateMemo,
-    // });
-  };
+ const handleSave = async (
+   updateTitle: string,
+   updateMemo: string,
+   cid: string
+ ) => {
+   const userId = localStorage.getItem('userId');
+   if (!userId) {
+     return;
+   }
 
+   const docRef = doc(db, 'todos', userId);
+   const docSnap = await getDoc(docRef);
+
+   if (docSnap.exists()) {
+     const data = docSnap.data();
+     const categoryIndex = data.todos.findIndex((cat: any) => cat.cid === cid);
+
+     if (categoryIndex > -1) {
+       data.todos[categoryIndex].name = updateTitle;
+       data.todos[categoryIndex].memo = updateMemo;
+
+       await updateDoc(docRef, {
+         todos: data.todos,
+       });
+       setRefetch((pre) => !pre);
+     }
+   }
+ };
   useEffect(() => {
     const fetchTestValue = async () => {
       const userId = localStorage.getItem('userId');
