@@ -55,8 +55,16 @@ const DateSelector = () => {
           <button onClick={handleToday} className="bg-gray-200 p-2 rounded-lg">
             오늘
           </button>
-          <FaAngleLeft onClick={handlePrevWeek} className="cursor-pointer" />
-          <FaAngleRight onClick={handleNextWeek} className="cursor-pointer" />
+          <FaAngleLeft
+            onClick={handlePrevWeek}
+            className="cursor-pointer"
+            data-testid="left-arrow"
+          />
+          <FaAngleRight
+            onClick={handleNextWeek}
+            className="cursor-pointer"
+            data-testid="right-arrow"
+          />
         </div>
       </div>
 

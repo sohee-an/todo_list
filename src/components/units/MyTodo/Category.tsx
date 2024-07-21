@@ -1,10 +1,10 @@
 import React, { SetStateAction, Dispatch, useState } from 'react';
-import CategoryButton from '../share/CategoryButton';
+import CategoryButton from '../../share/CategoryButton';
 import Todo from './Todo';
-import { db } from '../../config/firebase';
+import { db } from '../../../config/firebase';
 import { doc, getDoc, updateDoc, arrayUnion, setDoc } from 'firebase/firestore';
 import { uid } from 'uid';
-import SidePanel from '../share/SidePanel';
+import SidePanel from '../../share/SidePanel';
 
 type NewType = {
   item: {

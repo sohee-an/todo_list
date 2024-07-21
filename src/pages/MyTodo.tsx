@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import DateSelector from '../components/MyTodo/DateSelector';
+import DateSelector from '../components/units/MyTodo/DateSelector';
 import CategoryButton from '../components/share/CategoryButton';
 import SidePanel from '../components/share/SidePanel';
 import {
@@ -13,7 +13,7 @@ import {
 } from 'firebase/firestore';
 import { uid } from 'uid';
 import { db } from '../config/firebase';
-import Category from '../components/MyTodo/Category';
+import Category from '../components/units/MyTodo/Category';
 
 type TCategory = {
   id: string;

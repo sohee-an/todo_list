@@ -34,7 +34,7 @@ describe('SidePanel Component', () => {
     expect(mockOnClose).toHaveBeenCalledTimes(1);
   });
 
-  it('calls onSave with the correct parameters when save button is clicked', () => {
+  it('카테고리를 수정했을 때 ', () => {
     render(<SidePanel {...defaultProps} />);
     fireEvent.change(screen.getByDisplayValue('Test title'), {
       target: { value: 'New title' },
@@ -46,7 +46,7 @@ describe('SidePanel Component', () => {
     expect(mockOnSave).toHaveBeenCalledWith('New title', 'New memo', '1');
   });
 
-  it('calls onTodoSave with the correct parameters when save button is clicked and setSelectedTodo is true', () => {
+  it('카테고리의 하위의 투두를 수정할 때', () => {
     render(<SidePanel {...defaultProps} setSelectedTodo={true} />);
     fireEvent.change(screen.getByDisplayValue('Test title'), {
       target: { value: 'New title' },

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import Checkbox from '../share/Checkbox';
+import { useState } from 'react';
+import Checkbox from '../../share/Checkbox';
 import { FaEllipsisVertical } from 'react-icons/fa6';
 
 type Props = {
