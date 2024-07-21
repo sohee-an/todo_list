@@ -1,6 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Checkbox from '../../../components/share/Checkbox';
+import { vitest } from 'vitest';
 
 describe('Checkbox Component', () => {
   it('체크박스가 잘 보이는가', () => {
@@ -21,11 +22,21 @@ describe('Checkbox Component', () => {
     expect(checkbox).not.toBeChecked();
   });
 
-  it('onChange가 호출이 잘 되는지 ', () => {
-    const handleChange = jest.fn();
-    render(<Checkbox checked={false} onChange={handleChange} />);
+  it('체크박스가 클릭되면 상태가 변경되는지 확인', () => {
+    let isChecked = false;
+    const handleChange = () => {
+      isChecked = !isChecked;
+    };
+
+    render(<Checkbox checked={isChecked} onChange={handleChange} />);
     const checkbox = screen.getByRole('checkbox');
+
+    // 클릭하여 상태 변경
     fireEvent.click(checkbox);
-    expect(handleChange).toHaveBeenCalledTimes(1);
+    expect(isChecked).toBe(true);
+
+    // 다시 클릭하여 상태 변경
+    fireEvent.click(checkbox);
+    expect(isChecked).toBe(false);
   });
 });
