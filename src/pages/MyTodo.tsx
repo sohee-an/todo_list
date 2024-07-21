@@ -25,18 +25,17 @@ type TCategory = {
 const TodoList = () => {
   const [isPanelVisible, setIsPanelVisible] = useState(false);
   const [categorys, setCategorys] = useState<any[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<TCategory>({});
+  const [selectedCategory, setSelectedCategory] = useState<TCategory | any>({});
   const [refetch, setRefetch] = useState(false);
 
- const handleCategoryClick = (category: any) => {
-  const updatedCategory = {
-    ...category,
-    id: category.cid,
-   
+  const handleCategoryClick = (category: any) => {
+    const updatedCategory = {
+      ...category,
+      id: category.cid,
+    };
+    setSelectedCategory(updatedCategory);
+    setIsPanelVisible(true);
   };
-  setSelectedCategory(updatedCategory);
-  setIsPanelVisible(true);
-};
 
   const handlePanelClose = () => {
     setIsPanelVisible(false);

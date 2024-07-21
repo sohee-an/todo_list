@@ -12,6 +12,7 @@ interface Props<T extends FieldValues> {
   type?: string;
   placeholder?: string;
   errors: FieldErrors<T>;
+  className?: string;
 }
 
 const Input = <T extends FieldValues>({
@@ -20,7 +21,9 @@ const Input = <T extends FieldValues>({
   register,
   type = 'text',
   placeholder,
+  className,
   errors,
+  ...rest
 }: Props<T>) => {
   return (
     <div className="mb-6">
@@ -33,10 +36,11 @@ const Input = <T extends FieldValues>({
         {...register(name)}
         type={type}
         id={name}
-        placeholder={placeholder}
+        placeholder={placeholder || '텍스트를 입력해주세요'}
         className={`mt-1 block w-full px-3 py-2 bg-white border ${
           errors[name] ? 'border-red-500' : 'border-gray-300'
         } rounded-md shadow-sm focus:outline-none focus:ring focus:ring-opacity-50`}
+        {...rest}
       />
       {errors[name] && (
         <p className="text-red-500 text-xs mt-1">

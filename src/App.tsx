@@ -11,7 +11,10 @@ import { useEffect, useState } from 'react';
 import { getDatabase, ref, get } from 'firebase/database';
 import Register from './pages/auth/Register';
 
-
+// 테스트 할것들
+// 날짜가 제대로 잘 보이는지 , 오늘 날짜가 보이는지 
+// 카테고리가 잘 생성이 되는가 -> 수정이 잘 되는가 
+// 투두는 잘 생기는가 => 수정이 잘 되는가 -> 삭제는 잘 되는가 
 
 
 function App() {
@@ -28,6 +31,7 @@ function App() {
     init();
   }, []);
  
+
   return (
     <BrowserRouter>
     <Routes>
