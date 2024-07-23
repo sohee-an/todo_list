@@ -1,7 +1,7 @@
 import { vi } from 'vitest';
 import ErrorPage from '../../pages/ErrorPage';
 import userEvent from '@testing-library/user-event';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 
 const navigateFn = vi.fn();
 vi.mock('react-router-dom', async () => {
