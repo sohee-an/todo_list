@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const useAuth = (redirectTo = '/') => {
+const useAuth = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
 
@@ -9,11 +9,10 @@ const useAuth = (redirectTo = '/') => {
     const token = localStorage.getItem('token');
     if (token) {
       setIsLoggedIn(true);
-      navigate(redirectTo);
     } else {
       navigate('/login');
     }
-  }, [navigate, redirectTo]);
+  }, [navigate]);
 
   return isLoggedIn;
 };
