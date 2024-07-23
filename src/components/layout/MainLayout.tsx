@@ -1,23 +1,19 @@
-import { useEffect, useState } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import {  useState } from 'react';
+import { Outlet,  } from 'react-router-dom';
 import { FaCalendarDays } from 'react-icons/fa6';
 import { FaHouse } from 'react-icons/fa6';
 import { FaGear } from 'react-icons/fa6';
+import useAuth from '../../hook/useAuth';
 
 const MainLayout = () => {
-  const navigate = useNavigate();
+  
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      navigate('/login');
-    }
-  }, [navigate]);
+  useAuth()
 
   return (
     <div className="flex min-h-screen">

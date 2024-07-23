@@ -16,7 +16,7 @@ const Register = () => {
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     const { email, password } = data;
     Signup(email, password).then(() => {
-      navigate('/');
+      navigate('/login');
     });
   };
 

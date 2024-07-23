@@ -14,17 +14,14 @@ import ErrorPage from './pages/ErrorPage';
 
 
 function App() {
-  const db = getDatabase(app);
-  const [isLoading, setIsLoading] = useState(false);
+
 
   const init = async () => {
     await auth.authStateReady();
-    setIsLoading(false);
+   
   };
 
-  useEffect(() => {
-    init();
-  }, []);
+
 
   return (
     <BrowserRouter>
