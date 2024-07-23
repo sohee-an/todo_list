@@ -11,7 +11,7 @@ type NewType = {
     cid: string;
     memo: string;
     title: string;
-    item: TTodo[];
+    item: TTodo[] | [];
   };
   onClick: () => void;
   setRefetch: Dispatch<SetStateAction<boolean>>;
@@ -30,9 +30,9 @@ const Category = ({ item, onClick, setRefetch }: Props) => {
   const [isPanelVisible, setIsPanelVisible] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<any>({});
   const [inputState, setInputState] = useState(false);
-  
 
   const [value, setValue] = useState('');
+  const handleRefetch = () => {};
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();

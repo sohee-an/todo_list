@@ -45,6 +45,7 @@ const Todo = ({ item, onChange, onEdit, onDelete }: Props) => {
       </div>
       <div className="relative">
         <FaEllipsisVertical
+          data-testid="menuToggole"
           className="cursor-pointer  "
           onClick={handleMenuToggle}
         />
