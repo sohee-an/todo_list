@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { FaAngleLeft } from 'react-icons/fa6';
+import { FaAngleRight } from 'react-icons/fa6';
 
 const daysOfWeek = ['월', '화', '수', '목', '금', '토', '일'];
 
@@ -11,6 +13,7 @@ const DateSelector = () => {
     currentDate.getDay() === 0 ? 6 : currentDate.getDay() - 1;
 
   const [selectedDay, setSelectedDay] = useState<number>(currentDayIndex);
+  const [startDate, setStartDate] = useState<Date>(currentDate);
 
   /**
    * 현재 주의 각 날짜를 계산하는 함수
@@ -26,14 +29,51 @@ const DateSelector = () => {
     return dates;
   };
 
-  const datesOfWeek = getDatesOfWeek(currentDate);
+  const datesOfWeek = getDatesOfWeek(startDate);
+
+  const handlePrevWeek = () => {
+    const newStartDate = new Date(startDate);
+    newStartDate.setDate(startDate.getDate() - 7);
+    setStartDate(newStartDate);
+  };
+
+  const handleNextWeek = () => {
+    const newStartDate = new Date(startDate);
+    newStartDate.setDate(startDate.getDate() + 7);
+    setStartDate(newStartDate);
+  };
+
+  const handleToday = () => {
+    setStartDate(currentDate);
+  };
 
   return (
     <section>
-      <h2 className="text-xl font-bold mb-4 m-6">{`${currentYear}년 ${currentMonth}월 ${currentDay}일`}</h2>
+      <div className="flex items-center justify-between">
+        <h2 className="text-xl font-bold mb-4 m-6">{`${currentYear}년 ${currentMonth}월 ${currentDay}일`}</h2>
+        <div className="flex space-x-4 justify-center items-center">
+          <button onClick={handleToday} className="bg-gray-200 p-2 rounded-lg">
+            오늘
+          </button>
+          <FaAngleLeft
+            onClick={handlePrevWeek}
+            className="cursor-pointer"
+            data-testid="left-arrow"
+          />
+          <FaAngleRight
+            onClick={handleNextWeek}
+            className="cursor-pointer"
+            data-testid="right-arrow"
+          />
+        </div>
+      </div>
+
       <div className="flex mb-4">
         {daysOfWeek.map((day, index) => {
-          const isToday = datesOfWeek[index] === currentDay;
+          const isToday =
+            startDate.getFullYear() === currentDate.getFullYear() &&
+            startDate.getMonth() === currentDate.getMonth() &&
+            datesOfWeek[index] === currentDay;
           const isSelected = selectedDay === index;
 
           return (
