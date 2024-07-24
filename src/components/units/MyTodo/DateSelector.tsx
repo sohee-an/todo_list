@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { FaAngleLeft } from 'react-icons/fa6';
 import { FaAngleRight } from 'react-icons/fa6';
 
-const daysOfWeek = ['월', '화', '수', '목', '금', '토', '일'];
+const DAYS_OF_WEEK = ['월', '화', '수', '목', '금', '토', '일'] as const;
 
 const DateSelector = () => {
   const currentDate = new Date();
@@ -69,7 +69,7 @@ const DateSelector = () => {
       </div>
 
       <div className="flex mb-4">
-        {daysOfWeek.map((day, index) => {
+        {DAYS_OF_WEEK.map((day, index) => {
           const isToday =
             startDate.getFullYear() === currentDate.getFullYear() &&
             startDate.getMonth() === currentDate.getMonth() &&
