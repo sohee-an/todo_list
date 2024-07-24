@@ -31,20 +31,15 @@ const DateSelector = () => {
 
   const datesOfWeek = getDatesOfWeek(startDate);
 
-  const handlePrevWeek = () => {
+  const handleWeekChange = (to: 'next' | 'prev' | 'today') => {
     const newStartDate = new Date(startDate);
-    newStartDate.setDate(startDate.getDate() - 7);
-    setStartDate(newStartDate);
-  };
+    if (to === 'next') {
+      newStartDate.setDate(startDate.getDate() + 7);
+    } else if (to === 'prev') {
+      newStartDate.setDate(startDate.getDate() - 7);
+    }
 
-  const handleNextWeek = () => {
-    const newStartDate = new Date(startDate);
-    newStartDate.setDate(startDate.getDate() + 7);
     setStartDate(newStartDate);
-  };
-
-  const handleToday = () => {
-    setStartDate(currentDate);
   };
 
   return (
@@ -52,16 +47,19 @@ const DateSelector = () => {
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold mb-4 m-6">{`${currentYear}년 ${currentMonth}월 ${currentDay}일`}</h2>
         <div className="flex space-x-4 justify-center items-center">
-          <button onClick={handleToday} className="bg-gray-200 p-2 rounded-lg">
+          <button
+            onClick={() => handleWeekChange('today')}
+            className="bg-gray-200 p-2 rounded-lg"
+          >
             오늘
           </button>
           <FaAngleLeft
-            onClick={handlePrevWeek}
+            onClick={() => handleWeekChange('prev')}
             className="cursor-pointer"
             data-testid="left-arrow"
           />
           <FaAngleRight
-            onClick={handleNextWeek}
+            onClick={() => handleWeekChange('next')}
             className="cursor-pointer"
             data-testid="right-arrow"
           />
