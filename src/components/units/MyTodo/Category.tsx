@@ -5,6 +5,7 @@ import { db } from '../../../config/firebase';
 import { doc, getDoc, updateDoc, arrayUnion, setDoc } from 'firebase/firestore';
 import { uid } from 'uid';
 import SidePanel from '../../share/SidePanel';
+import useUserId from '../../../hook/useUserId';
 
 type NewType = {
   item: {
@@ -30,20 +31,16 @@ const Category = ({ item, onClick, setRefetch }: Props) => {
   const [isPanelVisible, setIsPanelVisible] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<any>({});
   const [inputState, setInputState] = useState(false);
-
   const [value, setValue] = useState('');
+  const userId = useUserId();
+
   const handleRefetch = () => {};
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setInputState(false);
     setValue('');
-    const userId = localStorage.getItem('userId');
-
-    if (!userId) {
-      alert('로그인을 해주세요');
-      return;
-    }
+    if (!userId) return;
 
     const newTodo = {
       id: uid(),
@@ -104,12 +101,7 @@ const Category = ({ item, onClick, setRefetch }: Props) => {
   };
 
   const handleCheckboxChange = async (checkboxValue: boolean, id: string) => {
-    const userId = localStorage.getItem('userId');
-
-    if (!userId) {
-      alert('로그인을 해주세요');
-      return;
-    }
+    if (!userId) return;
 
     const docRef = doc(db, 'todos', userId);
     const docSnap = await getDoc(docRef);
@@ -148,13 +140,7 @@ const Category = ({ item, onClick, setRefetch }: Props) => {
     updateMemo: string,
     id: string
   ) => {
-    const userId = localStorage.getItem('userId');
-    if (!userId) {
-      return;
-    }
-
-    console.log('up', updateTitle);
-    console.log('memo', updateMemo);
+    if (!userId) return;
 
     const docRef = doc(db, 'todos', userId);
     const docSnap = await getDoc(docRef);
@@ -197,12 +183,7 @@ const Category = ({ item, onClick, setRefetch }: Props) => {
   };
 
   const handleDelete = async (id: string) => {
-    const userId = localStorage.getItem('userId');
-
-    if (!userId) {
-      alert('로그인을 해주세요');
-      return;
-    }
+    if (!userId) return;
 
     const docRef = doc(db, 'todos', userId);
     const docSnap = await getDoc(docRef);

@@ -1,32 +1,40 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp } from 'firebase/app';
-import 'firebase/auth'
+// firebaseConfig.ts
+import { initializeApp, getApp, getApps, FirebaseApp } from 'firebase/app';
+import { getAuth, Auth } from 'firebase/auth';
+import { getFirestore, Firestore } from 'firebase/firestore';
 
-import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
-//
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
   storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId:  import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
+class FirebaseSingleton {
+  private static instance: FirebaseSingleton;
+  public app: FirebaseApp;
+  public auth: Auth;
+  public db: Firestore;
 
+  private constructor() {
+    this.app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+    this.auth = getAuth(this.app);
+    this.db = getFirestore(this.app);
+  }
 
+  public static getInstance(): FirebaseSingleton {
+    if (!FirebaseSingleton.instance) {
+      FirebaseSingleton.instance = new FirebaseSingleton();
+    }
+    return FirebaseSingleton.instance;
+  }
+}
 
+const firebaseInstance = FirebaseSingleton.getInstance();
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app) // Firestore 인스턴스를 가져옵니다.
-const auth = getAuth(app);
-
-// export {app}
- export { app, db, auth,  };
+export const app = firebaseInstance.app;
+export const auth = firebaseInstance.auth;
+export const db = firebaseInstance.db;
