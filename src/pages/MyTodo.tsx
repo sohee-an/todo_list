@@ -1,34 +1,20 @@
 import { useEffect, useState } from 'react';
 import DateSelector from '../components/units/MyTodo/DateSelector';
-import CategoryButton from '../components/share/CategoryButton';
 import SidePanel from '../components/share/SidePanel';
-import {
-  addDoc,
-  arrayUnion,
-  collection,
-  doc,
-  getDoc,
-  setDoc,
-  updateDoc,
-} from 'firebase/firestore';
 import { uid } from 'uid';
-import { db } from '../config/firebase';
 import Category from '../components/units/MyTodo/Category';
-
-type TCategory = {
-  id: string;
-  memo: string;
-  name: string;
-  userid: string;
-};
+import useUserId from '../hook/useUserId';
+import { TCategory, TUpdateTodo } from '../types/TodoTypes';
+import FirebaseActions from '../api/Todo';
 
 const TodoList = () => {
   const [isPanelVisible, setIsPanelVisible] = useState(false);
-  const [categorys, setCategorys] = useState<any[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<TCategory | any>({});
+  const [categorys, setCategorys] = useState<TCategory[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<TUpdateTodo>();
   const [refetch, setRefetch] = useState(false);
+  const userId = useUserId();
 
-  const handleCategoryClick = (category: any) => {
+  const handleCategoryClick = (category: TCategory) => {
     const updatedCategory = {
       ...category,
       id: category.cid,
@@ -46,46 +32,35 @@ const TodoList = () => {
     updateMemo: string,
     id: string
   ) => {
-    const userId = localStorage.getItem('userId');
-    if (!userId) {
-      return;
-    }
+    if (!userId) return;
 
-    console.log('up', updateTitle);
-    console.log('memo', updateMemo);
+    try {
+      const data = await FirebaseActions.getDocument(userId);
+      if (data) {
+        const categoryIndex = data.todos.findIndex(
+          (cat: TCategory) => cat.cid === id
+        );
 
-    const docRef = doc(db, 'todos', userId);
-    const docSnap = await getDoc(docRef);
+        if (categoryIndex > -1) {
+          data.todos[categoryIndex].title = updateTitle;
+          data.todos[categoryIndex].memo = updateMemo;
 
-    if (docSnap.exists()) {
-      const data = docSnap.data();
-      const categoryIndex = data.todos.findIndex((cat: any) => cat.cid === id);
-
-      if (categoryIndex > -1) {
-        data.todos[categoryIndex].title = updateTitle;
-        data.todos[categoryIndex].memo = updateMemo;
-
-        await updateDoc(docRef, {
-          todos: data.todos,
-        });
-        setRefetch((pre) => !pre);
+          await FirebaseActions.updateDocument(userId, { todos: data.todos });
+          setRefetch((pre) => !pre);
+        }
       }
+    } catch (error) {
+      console.error('Error saving category: ', error);
     }
   };
+
   useEffect(() => {
-    const fetchTestValue = async () => {
-      const userId = localStorage.getItem('userId');
-      if (!userId) {
-        return;
-      }
+    const fetchCategories = async () => {
+      if (!userId) return;
 
       try {
-        const docRef = doc(db, 'todos', userId);
-        const docSnap = await getDoc(docRef);
-
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-
+        const data = await FirebaseActions.getDocument(userId);
+        if (data) {
           setCategorys(data.todos || []);
         } else {
           console.log('No such document!');
@@ -95,41 +70,25 @@ const TodoList = () => {
       }
     };
 
-    fetchTestValue();
-  }, [refetch]);
+    fetchCategories();
+  }, [userId, refetch]);
 
   const handleClick = async () => {
-    const userId = localStorage.getItem('userId');
-    if (!userId) {
-      return;
-    }
+    if (!userId) return;
 
     const newCategory = {
       userid: userId,
       cid: uid(),
       title: '카테고리1',
       memo: '메모',
+      item: [],
     };
 
-    const docRef = doc(db, 'todos', userId);
-    const docSnap = await getDoc(docRef);
-
     try {
-      if (docSnap.exists()) {
-        // 문서가 존재하는 경우 배열 필드에 새 객체 추가
-        await updateDoc(docRef, {
-          todos: arrayUnion(newCategory),
-        });
-      } else {
-        // 문서가 존재하지 않는 경우 배열 필드 생성
-        await setDoc(docRef, {
-          todos: [newCategory],
-        });
-      }
-
+      await FirebaseActions.addCategory(userId, newCategory);
       setCategorys((prevCategories) => [...prevCategories, newCategory]);
     } catch (error) {
-      console.error('Error adding document: ', error);
+      console.error('Error adding category: ', error);
     }
   };
 
@@ -144,7 +103,7 @@ const TodoList = () => {
           카테고리를 등록해주세요
         </button>
         {categorys.length !== 0 &&
-          categorys.map((item: any) => (
+          categorys.map((item: TCategory) => (
             <Category
               key={item.cid}
               item={item}
@@ -153,14 +112,16 @@ const TodoList = () => {
             />
           ))}
       </div>
-      <SidePanel
-        formTitle="카테고리 수정"
-        isVisible={isPanelVisible}
-        onClose={handlePanelClose}
-        category={selectedCategory}
-        onSave={handleCategorySave}
-        setSelectedTodo={false}
-      />
+      {!!selectedCategory && (
+        <SidePanel
+          formTitle="카테고리 수정"
+          isVisible={isPanelVisible}
+          onClose={handlePanelClose}
+          item={selectedCategory}
+          onSave={handleCategorySave}
+          setSelectedTodo={false}
+        />
+      )}
     </div>
   );
 };

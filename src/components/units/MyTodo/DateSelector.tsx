@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { FaAngleLeft } from 'react-icons/fa6';
 import { FaAngleRight } from 'react-icons/fa6';
 
-const daysOfWeek = ['월', '화', '수', '목', '금', '토', '일'];
+const DAYS_OF_WEEK = ['월', '화', '수', '목', '금', '토', '일'] as const;
 
 const DateSelector = () => {
   const currentDate = new Date();
@@ -17,7 +17,7 @@ const DateSelector = () => {
 
   /**
    * 현재 주의 각 날짜를 계산하는 함수
-   *  */
+   */
   const getDatesOfWeek = (startDate: Date) => {
     const dates = [];
     const dayIndex = startDate.getDay() === 0 ? 6 : startDate.getDay() - 1;
@@ -31,20 +31,15 @@ const DateSelector = () => {
 
   const datesOfWeek = getDatesOfWeek(startDate);
 
-  const handlePrevWeek = () => {
+  const handleWeekChange = (to: 'next' | 'prev' | 'today') => {
     const newStartDate = new Date(startDate);
-    newStartDate.setDate(startDate.getDate() - 7);
-    setStartDate(newStartDate);
-  };
+    if (to === 'next') {
+      newStartDate.setDate(startDate.getDate() + 7);
+    } else if (to === 'prev') {
+      newStartDate.setDate(startDate.getDate() - 7);
+    }
 
-  const handleNextWeek = () => {
-    const newStartDate = new Date(startDate);
-    newStartDate.setDate(startDate.getDate() + 7);
     setStartDate(newStartDate);
-  };
-
-  const handleToday = () => {
-    setStartDate(currentDate);
   };
 
   return (
@@ -52,24 +47,33 @@ const DateSelector = () => {
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold mb-4 m-6">{`${currentYear}년 ${currentMonth}월 ${currentDay}일`}</h2>
         <div className="flex space-x-4 justify-center items-center">
-          <button onClick={handleToday} className="bg-gray-200 p-2 rounded-lg">
+          <button
+            onClick={() => handleWeekChange('today')}
+            className="bg-gray-200 p-2 rounded-lg"
+            aria-label="오늘 날짜로 이동"
+            tabIndex={0}
+          >
             오늘
           </button>
           <FaAngleLeft
-            onClick={handlePrevWeek}
+            onClick={() => handleWeekChange('prev')}
             className="cursor-pointer"
             data-testid="left-arrow"
+            aria-label="이전 주로 이동"
+            tabIndex={0}
           />
           <FaAngleRight
-            onClick={handleNextWeek}
+            onClick={() => handleWeekChange('next')}
             className="cursor-pointer"
             data-testid="right-arrow"
+            aria-label="다음 주로 이동"
+            tabIndex={0}
           />
         </div>
       </div>
 
       <div className="flex mb-4">
-        {daysOfWeek.map((day, index) => {
+        {DAYS_OF_WEEK.map((day, index) => {
           const isToday =
             startDate.getFullYear() === currentDate.getFullYear() &&
             startDate.getMonth() === currentDate.getMonth() &&
@@ -81,6 +85,8 @@ const DateSelector = () => {
               key={day}
               className="flex-1 text-center font-semibold cursor-pointer"
               onClick={() => setSelectedDay(index)}
+              tabIndex={0}
+              aria-label={`${day} ${datesOfWeek[index]}일 선택`}
             >
               <span
                 className={`inline-block px-2 py-1 rounded-full ${
