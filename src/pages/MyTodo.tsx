@@ -1,19 +1,11 @@
 import { useEffect, useState } from 'react';
 import DateSelector from '../components/units/MyTodo/DateSelector';
 import SidePanel from '../components/share/SidePanel';
-import {
-  addDoc,
-  arrayUnion,
-  doc,
-  getDoc,
-  setDoc,
-  updateDoc,
-} from 'firebase/firestore';
 import { uid } from 'uid';
-import { db } from '../config/firebase';
 import Category from '../components/units/MyTodo/Category';
 import useUserId from '../hook/useUserId';
 import { TCategory, TUpdateTodo } from '../types/TodoTypes';
+import FirebaseActions from '../api/Todo';
 
 const TodoList = () => {
   const [isPanelVisible, setIsPanelVisible] = useState(false);
@@ -41,41 +33,34 @@ const TodoList = () => {
     id: string
   ) => {
     if (!userId) return;
-    console.log('uu', updateTitle);
-    console.log('id', id);
 
-    const docRef = doc(db, 'todos', userId);
-    const docSnap = await getDoc(docRef);
+    try {
+      const data = await FirebaseActions.getDocument(userId);
+      if (data) {
+        const categoryIndex = data.todos.findIndex(
+          (cat: TCategory) => cat.cid === id
+        );
 
-    if (docSnap.exists()) {
-      const data = docSnap.data();
-      const categoryIndex = data.todos.findIndex(
-        (cat: TCategory) => cat.cid === id
-      );
+        if (categoryIndex > -1) {
+          data.todos[categoryIndex].title = updateTitle;
+          data.todos[categoryIndex].memo = updateMemo;
 
-      if (categoryIndex > -1) {
-        data.todos[categoryIndex].title = updateTitle;
-        data.todos[categoryIndex].memo = updateMemo;
-
-        await updateDoc(docRef, {
-          todos: data.todos,
-        });
-        setRefetch((pre) => !pre);
+          await FirebaseActions.updateDocument(userId, { todos: data.todos });
+          setRefetch((pre) => !pre);
+        }
       }
+    } catch (error) {
+      console.error('Error saving category: ', error);
     }
   };
 
   useEffect(() => {
-    const fetchTestValue = async () => {
+    const fetchCategories = async () => {
       if (!userId) return;
 
       try {
-        const docRef = doc(db, 'todos', userId);
-        const docSnap = await getDoc(docRef);
-
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          console.log('data', data);
+        const data = await FirebaseActions.getDocument(userId);
+        if (data) {
           setCategorys(data.todos || []);
         } else {
           console.log('No such document!');
@@ -85,7 +70,7 @@ const TodoList = () => {
       }
     };
 
-    fetchTestValue();
+    fetchCategories();
   }, [userId, refetch]);
 
   const handleClick = async () => {
@@ -99,25 +84,11 @@ const TodoList = () => {
       item: [],
     };
 
-    const docRef = doc(db, 'todos', userId);
-    const docSnap = await getDoc(docRef);
-
     try {
-      if (docSnap.exists()) {
-        // 문서가 존재하는 경우 배열 필드에 새 객체 추가
-        await updateDoc(docRef, {
-          todos: arrayUnion(newCategory),
-        });
-      } else {
-        // 문서가 존재하지 않는 경우 배열 필드 생성
-        await setDoc(docRef, {
-          todos: [newCategory],
-        });
-      }
-
+      await FirebaseActions.addCategory(userId, newCategory);
       setCategorys((prevCategories) => [...prevCategories, newCategory]);
     } catch (error) {
-      console.error('Error adding document: ', error);
+      console.error('Error adding category: ', error);
     }
   };
 
