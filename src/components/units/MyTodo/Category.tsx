@@ -6,30 +6,17 @@ import { doc, getDoc, updateDoc, arrayUnion, setDoc } from 'firebase/firestore';
 import { uid } from 'uid';
 import SidePanel from '../../share/SidePanel';
 import useUserId from '../../../hook/useUserId';
+import { TCategory, TTodo } from '../../../types/TodoTypes';
 
-type NewType = {
-  item: {
-    cid: string;
-    memo: string;
-    title: string;
-    item: TTodo[] | [];
-  };
+type Props = {
+  item: TCategory;
   onClick: () => void;
   setRefetch: Dispatch<SetStateAction<boolean>>;
 };
 
-type Props = NewType;
-
-export type TTodo = {
-  id: string;
-  memo: string;
-  title: string;
-  selected: boolean;
-};
-
 const Category = ({ item, onClick, setRefetch }: Props) => {
   const [isPanelVisible, setIsPanelVisible] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<any>({});
+  const [selectedTodo, setSelectedTodo] = useState<TTodo>();
   const [inputState, setInputState] = useState(false);
   const [value, setValue] = useState('');
   const userId = useUserId();
@@ -56,7 +43,7 @@ const Category = ({ item, onClick, setRefetch }: Props) => {
       if (docSnap.exists()) {
         const data = docSnap.data();
         const categoryIndex = data.todos.findIndex(
-          (cat: any) => cat.cid === item.cid
+          (cat: TCategory) => cat.cid === item.cid
         );
 
         if (categoryIndex > -1) {
@@ -110,7 +97,7 @@ const Category = ({ item, onClick, setRefetch }: Props) => {
       if (docSnap.exists()) {
         const data = docSnap.data();
         const categoryIndex = data.todos.findIndex(
-          (cat: any) => cat.cid === item.cid
+          (cat: TCategory) => cat.cid === item.cid
         );
 
         if (categoryIndex > -1) {
@@ -148,7 +135,7 @@ const Category = ({ item, onClick, setRefetch }: Props) => {
     if (docSnap.exists()) {
       const data = docSnap.data();
       const categoryIndex = data.todos.findIndex(
-        (cat: any) => cat.cid === item.cid
+        (cat: TCategory) => cat.cid === item.cid
       );
 
       if (categoryIndex > -1) {
@@ -177,7 +164,7 @@ const Category = ({ item, onClick, setRefetch }: Props) => {
     const todoToEdit = item.item.find((todo: TTodo) => todo.id === id);
     if (todoToEdit) {
       console.log('dd', todoToEdit);
-      setSelectedCategory(todoToEdit);
+      setSelectedTodo(todoToEdit);
       setIsPanelVisible(true);
     }
   };
@@ -192,7 +179,7 @@ const Category = ({ item, onClick, setRefetch }: Props) => {
       if (docSnap.exists()) {
         const data = docSnap.data();
         const categoryIndex = data.todos.findIndex(
-          (cat: any) => cat.cid === item.cid
+          (cat: TCategory) => cat.cid === item.cid
         );
 
         if (categoryIndex > -1) {
@@ -233,9 +220,8 @@ const Category = ({ item, onClick, setRefetch }: Props) => {
           </form>
         )}
       </div>
-
       <div>
-        {item.item &&
+        {!!item.item &&
           item.item.map((todo: TTodo) => {
             return (
               <Todo
@@ -248,14 +234,14 @@ const Category = ({ item, onClick, setRefetch }: Props) => {
             );
           })}
       </div>
-      <SidePanel
+    {!!selectedTodo &&  <SidePanel
         formTitle="할일 수정"
         isVisible={isPanelVisible}
         onClose={handlePanelClose}
-        category={selectedCategory}
+        item={selectedTodo}
         setSelectedTodo={true}
         onTodoSave={handleTodoSave}
-      />
+      />}
     </div>
   );
 };

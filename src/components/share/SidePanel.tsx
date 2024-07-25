@@ -1,16 +1,12 @@
 import { useState, useEffect } from 'react';
+import { TUpdateTodo } from '../../types/TodoTypes';
 
 type Props = {
   isVisible: boolean;
   formTitle: string;
   setSelectedTodo: boolean;
   onClose: () => void;
-  category: {
-    id: string;
-    memo: string;
-    title: string;
-    userid?: string;
-  };
+  item: TUpdateTodo;
   onSave?: (title: string, memo: string, cid: string) => void;
   onTodoSave?:(title:string,memo:string,cid:string)=>void
 };
@@ -19,23 +15,23 @@ const SidePanel = ({
   formTitle,
   isVisible,
   onClose,
-  category,
+  item,
   setSelectedTodo,
   onSave,
   onTodoSave,
 }: Props) => {
-  const [title, setTitle] = useState(category.title);
-  const [memo, setMemo] = useState(category.memo);
+  const [title, setTitle] = useState(item.title);
+  const [memo, setMemo] = useState(item.memo);
 
   useEffect(() => {
-    setTitle(category.title);
-  }, [category]);
+    setTitle(item.title);
+  }, [item]);
 
   const handleSave = () => {
     if (setSelectedTodo) {
-      onTodoSave && onTodoSave(title, memo, category.id);
+      onTodoSave && onTodoSave(title, memo, item.id);
     } else {
-      onSave && onSave(title, memo, category.id);
+      onSave && onSave(title, memo, item.id);
     }
 
     onClose();
