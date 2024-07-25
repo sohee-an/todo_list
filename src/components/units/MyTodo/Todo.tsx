@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import Checkbox from '../../share/Checkbox';
-import { FaEllipsisVertical } from 'react-icons/fa6';
 import Toggle from '../../share/Toggle';
 
 type Props = {
@@ -46,7 +45,6 @@ const Todo = ({ item, onChange, onEdit, onDelete }: Props) => {
       </div>
       <div className="relative">
         <Toggle onClick={handleMenuToggle} />
-       
         {menuVisible && (
           <div className="absolute   left-4 mt-2 w-20 bg-white border rounded shadow-md z-10">
             <button
