@@ -17,7 +17,7 @@ const DateSelector = () => {
 
   /**
    * 현재 주의 각 날짜를 계산하는 함수
-   *  */
+   */
   const getDatesOfWeek = (startDate: Date) => {
     const dates = [];
     const dayIndex = startDate.getDay() === 0 ? 6 : startDate.getDay() - 1;
@@ -50,6 +50,8 @@ const DateSelector = () => {
           <button
             onClick={() => handleWeekChange('today')}
             className="bg-gray-200 p-2 rounded-lg"
+            aria-label="오늘 날짜로 이동"
+            tabIndex={0}
           >
             오늘
           </button>
@@ -57,11 +59,15 @@ const DateSelector = () => {
             onClick={() => handleWeekChange('prev')}
             className="cursor-pointer"
             data-testid="left-arrow"
+            aria-label="이전 주로 이동"
+            tabIndex={0}
           />
           <FaAngleRight
             onClick={() => handleWeekChange('next')}
             className="cursor-pointer"
             data-testid="right-arrow"
+            aria-label="다음 주로 이동"
+            tabIndex={0}
           />
         </div>
       </div>
@@ -79,6 +85,8 @@ const DateSelector = () => {
               key={day}
               className="flex-1 text-center font-semibold cursor-pointer"
               onClick={() => setSelectedDay(index)}
+              tabIndex={0}
+              aria-label={`${day} ${datesOfWeek[index]}일 선택`}
             >
               <span
                 className={`inline-block px-2 py-1 rounded-full ${

@@ -20,7 +20,7 @@ const Category = ({ item, onClick, setRefetch }: Props) => {
   const [value, setValue] = useState('');
   const userId = useUserId();
 
-  const handleRefetch = () => {};
+ 
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
