@@ -2,7 +2,7 @@ import { Outlet } from 'react-router-dom';
 import useAuth from '../../hook/useAuth';
 
 const AuthLayout = () => {
-  useAuth();
+  // useAuth();
 
   return (
     <div className="flex min-h-screen">

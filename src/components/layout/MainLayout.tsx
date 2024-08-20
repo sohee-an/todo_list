@@ -1,19 +1,18 @@
-import {  useState } from 'react';
-import { Outlet,  } from 'react-router-dom';
+import { useState } from 'react';
+import { Outlet } from 'react-router-dom';
 import { FaCalendarDays } from 'react-icons/fa6';
 import { FaHouse } from 'react-icons/fa6';
 import { FaGear } from 'react-icons/fa6';
 import useAuth from '../../hook/useAuth';
 
 const MainLayout = () => {
-  
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  useAuth()
+  // useAuth()
 
   return (
     <div className="flex min-h-screen">
