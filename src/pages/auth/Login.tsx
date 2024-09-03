@@ -17,6 +17,7 @@ const Login = () => {
     mutationFn: fetchLogin,
     onSuccess: (data) => {
       console.log('data', data);
+
       window.localStorage.setItem('token', data.accessToken);
       navigate('/');
     },

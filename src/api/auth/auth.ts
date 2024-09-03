@@ -4,12 +4,12 @@ import {
   signInWithEmailAndPassword,
 } from 'firebase/auth';
 
-import instance from '..';
+import apiClient from '..';
 import { LoginRequest, RegisterRequest } from './authType';
 
 export const fetchRegister = async (params: RegisterRequest) => {
   try {
-    const response = await instance.post('/auth/signup/email', params);
+    const response = await apiClient.post('/auth/signup/email', params);
 
     return response.data;
   } catch (error: any) {
@@ -19,7 +19,21 @@ export const fetchRegister = async (params: RegisterRequest) => {
 
 export const fetchLogin = async (params: LoginRequest) => {
   try {
-    const response = await instance.post('/auth/signin/email', params);
+    const response = await apiClient.post('/auth/signin/email', params);
+
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message);
+  }
+};
+
+export const fetchRefreshToken = async () => {
+  try {
+    const response = await apiClient.get('/auth/refresh/token', {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
 
     return response.data;
   } catch (error: any) {

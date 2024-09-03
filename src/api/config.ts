@@ -1,5 +1,5 @@
 export const BASE_HOST = {
-  host: 'http://localhost:3000/api/v1',
+  host: 'http://localhost:8080/api/v1',
 };
 
 export default BASE_HOST;

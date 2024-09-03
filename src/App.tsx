@@ -6,6 +6,7 @@ import MyTodo from './pages/MyTodo';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import ErrorPage from './pages/ErrorPage';
+import Schedule from './pages/schedule';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route element={<MainLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/my" element={<MyTodo />} />
+          <Route path="/schedule" element={<Schedule />} />
         </Route>
         <Route element={<AuthLayout />}>
           <Route path="/login" element={<Login />} />

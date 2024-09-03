@@ -20,6 +20,7 @@ const Register = () => {
       navigate('/login');
     },
     onError: (error) => {
+      console.log("err",error)
       alert(error.message);
     },
   });
