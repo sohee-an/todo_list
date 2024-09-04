@@ -1,16 +1,16 @@
-import { ChangeEvent, useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useMutation } from '@tanstack/react-query';
-import { fetchPostImage } from '../../api/schedule/schedule';
-import { v4 as uuidv4 } from 'uuid';
+import { fetchDeleteImage, fetchPostImage } from '../../api/image/image';
 
 type Props = {
-  onFileUpLoad: (filesId: string) => void;
+  onFileUpLoad: (files: any[]) => void;
 };
 
 type UploadedFile = {
-  id: string;
-  file: File;
+  fileName: string;
+  originalName: string;
+  fileSize: number;
 };
 
 function FileUpload({ onFileUpLoad }: Props) {
@@ -18,9 +18,20 @@ function FileUpload({ onFileUpLoad }: Props) {
 
   const { mutate } = useMutation({
     mutationFn: fetchPostImage,
-    onSuccess: ({ fileName }) => {
-      // console.log('File uploaded successfully:', fileName);
-      onFileUpLoad(fileName);
+    onSuccess: (data) => {
+      setFiles((prevFiles) => [...prevFiles, data]);
+    },
+    onError: (error: any) => {
+      console.error('Error uploading file:', error.message);
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: fetchDeleteImage,
+    onSuccess: ({ imageId }) => {
+      const filterFiles = files.filter((file) => file.fileName !== imageId);
+      setFiles(filterFiles);
+      onFileUpLoad(filterFiles);
     },
     onError: (error: any) => {
       console.error('Error uploading file:', error.message);
@@ -29,18 +40,12 @@ function FileUpload({ onFileUpLoad }: Props) {
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
-      const newFiles = acceptedFiles.map((file) => ({
-        id: uuidv4(),
-        file,
-      }));
-      setFiles((prevFiles) => [...prevFiles, ...newFiles]);
-
-      const formData = new FormData();
       acceptedFiles.forEach((file) => {
+        const formData = new FormData();
         formData.append('image', file);
-      });
 
-      mutate(formData);
+        mutate(formData);
+      });
     },
     [mutate]
   );
@@ -55,9 +60,7 @@ function FileUpload({ onFileUpLoad }: Props) {
   });
 
   const removeFile = (fileName: string) => {
-    setFiles((prevFiles) =>
-      prevFiles.filter(({ file }) => file.name !== fileName)
-    );
+    deleteMutation.mutate(fileName);
   };
 
   return (
@@ -79,22 +82,24 @@ function FileUpload({ onFileUpLoad }: Props) {
         )}
       </div>
       <ul className="mt-4">
-        {files.map(({ file }) => (
-          <li
-            key={file.name}
-            className="text-gray-600 flex justify-between items-center mb-2"
-          >
-            <span>
-              {file.name} ({file.size} bytes)
-            </span>
-            <button
-              onClick={() => removeFile(file.name)}
-              className="ml-4 text-white bg-red-400 py-1 px-2 rounded-lg"
+        {files.length !== 0 &&
+          files.map((file) => (
+            <li
+              key={file.fileName}
+              className="text-gray-600 flex justify-between items-center mb-2"
             >
-              x
-            </button>
-          </li>
-        ))}
+              <span>
+                {file.originalName} ({file.fileSize} bytes)
+              </span>
+              <button
+                type="button"
+                onClick={() => removeFile(file.fileName)}
+                className="ml-4 text-white bg-red-400 py-1 px-2 rounded-lg"
+              >
+                x
+              </button>
+            </li>
+          ))}
       </ul>
     </div>
   );

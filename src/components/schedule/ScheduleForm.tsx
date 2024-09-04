@@ -5,7 +5,7 @@ type Props = {
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   onDesChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
-  onFileUpLoad: (filesId: string) => void;
+  onFileUpLoad: (files: any[]) => void;
   value: { title: string; desc: string };
 };
 

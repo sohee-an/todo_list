@@ -2,14 +2,13 @@ import { useState, ChangeEvent, FormEvent } from 'react';
 import SlideModal from '../../components/share/SideModal';
 import ScheduleForm from '../../components/schedule/ScheduleForm';
 
-
 const Schedule = () => {
   const [project, setProject] = useState({ title: '', desc: '' });
   const [file, setFile] = useState<string[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleFileChange = (filesId: string) => {
-    setFile((pre) => ({ ...pre, filesId }));
+  const handleFileChange = (files: any[]) => {
+    setFile(files);
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
