@@ -82,7 +82,7 @@ function FileUpload({ onFileUpLoad, files }: Props) {
               className="text-gray-600 flex justify-between items-center mb-2"
             >
               <span>
-                {file.originalName} ({file.fileSize} bytes)
+                {file.originName} {file.fileSize && `(${file.fileSize} bytes)`}
               </span>
               <button
                 type="button"

@@ -1,9 +1,13 @@
 import apiClient from '..';
+import { fetchAssignmentRes, fetchPostAssignmentReq } from './scheduleType';
 
-type fetchPostAssignmentReq = {
-  dayNumber: number;
-  title: string;
-  description: string;
+export const fetchAssignment = async (): Promise<fetchAssignmentRes[]> => {
+  try {
+    const response = await apiClient.get('/assignment');
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message);
+  }
 };
 
 export const fetchPostAssignment = async (params: fetchPostAssignmentReq) => {
@@ -11,6 +15,15 @@ export const fetchPostAssignment = async (params: fetchPostAssignmentReq) => {
     const response = await apiClient.post('/assignment', params);
     return response.data;
   } catch (error: any) {
-    throw new Error(error.response?.data?.message || 'File upload failed');
+    throw new Error(error.response?.data?.message);
+  }
+};
+
+export const fetchDetailAssignment = async (assignmentId: string) => {
+  try {
+    const response = await apiClient.get(`/assignment/${assignmentId}`);
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message);
   }
 };

@@ -1,4 +1,5 @@
 import apiClient from '..';
+import { DownloadParams } from './imageTye';
 
 export const fetchPostImage = async (params: any) => {
   try {
@@ -19,4 +20,12 @@ export const fetchDeleteImage = async (imageId: string) => {
   } catch (error: any) {
     throw new Error(error.response?.data?.message || 'File upload failed');
   }
+};
+
+export const fetchDownloadFile = async ({ fileName }: DownloadParams) => {
+  const response = await apiClient.get(`/common/download/${fileName}`, {
+    responseType: 'blob',
+  });
+
+  return response.data;
 };

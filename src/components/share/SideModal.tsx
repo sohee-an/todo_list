@@ -4,10 +4,10 @@ interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   children: React.ReactNode;
-  title: number;
+  // title: number;
 }
 
-function SlideModal({ isOpen, onClose, children, title }: ModalProps) {
+function SlideModal({ isOpen, onClose, children }: ModalProps) {
   const handleBackgroundClick = (e: React.MouseEvent) => {
     e.stopPropagation();
   };
@@ -30,7 +30,7 @@ function SlideModal({ isOpen, onClose, children, title }: ModalProps) {
         onClick={handleBackgroundClick}
       >
         <div className="p-4 flex justify-between items-center border-b">
-          <h2 className="text-xl font-bold">{title}</h2>
+          {/* <h2 className="text-xl font-bold">{title}</h2> */}
           <button
             onClick={onClose}
             className="text-gray-700 hover:text-gray-900"
