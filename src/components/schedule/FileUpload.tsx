@@ -1,25 +1,19 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useMutation } from '@tanstack/react-query';
 import { fetchDeleteImage, fetchPostImage } from '../../api/image/image';
 
 type Props = {
   onFileUpLoad: (files: any[]) => void;
+  files: any[];
 };
 
-type UploadedFile = {
-  fileName: string;
-  originalName: string;
-  fileSize: number;
-};
-
-function FileUpload({ onFileUpLoad }: Props) {
-  const [files, setFiles] = useState<UploadedFile[]>([]);
-
+function FileUpload({ onFileUpLoad, files }: Props) {
   const { mutate } = useMutation({
     mutationFn: fetchPostImage,
     onSuccess: (data) => {
-      setFiles((prevFiles) => [...prevFiles, data]);
+      const newFiles = [...files, data];
+      onFileUpLoad(newFiles);
     },
     onError: (error: any) => {
       console.error('Error uploading file:', error.message);
@@ -30,7 +24,6 @@ function FileUpload({ onFileUpLoad }: Props) {
     mutationFn: fetchDeleteImage,
     onSuccess: ({ imageId }) => {
       const filterFiles = files.filter((file) => file.fileName !== imageId);
-      setFiles(filterFiles);
       onFileUpLoad(filterFiles);
     },
     onError: (error: any) => {

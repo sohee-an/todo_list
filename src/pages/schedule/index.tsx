@@ -1,14 +1,37 @@
 import { useState, ChangeEvent, FormEvent } from 'react';
 import SlideModal from '../../components/share/SideModal';
 import ScheduleForm from '../../components/schedule/ScheduleForm';
+import { useMutation } from '@tanstack/react-query';
+import { fetchPostAssignment } from '../../api/schedule/schedule';
 
+type TUploadedFile = {
+  fileName: string;
+  originalName: string;
+  fileSize: number;
+};
+
+const initValue = {
+  dayNumber: 1,
+  title: '',
+  desc: '',
+};
 const Schedule = () => {
-  const [project, setProject] = useState({ title: '', desc: '' });
-  const [file, setFile] = useState<string[]>([]);
+  const [project, setProject] = useState(initValue);
+  const [files, setFiles] = useState<TUploadedFile[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleFileChange = (files: any[]) => {
-    setFile(files);
+  const postAssignment = useMutation({
+    mutationFn: fetchPostAssignment,
+    onSuccess: (data) => {
+      console.log('data', data);
+    },
+    onError: (error: any) => {
+      console.error('Error uploading file:', error.message);
+    },
+  });
+
+  const handleFileChange = (files: TUploadedFile[]) => {
+    setFiles(files);
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -25,9 +48,21 @@ const Schedule = () => {
       alert('제목과 설명을 입력해주세요.');
       return;
     }
-    console.log('project', project);
-    // 폼 제출 로직
-    setIsModalOpen(false); // 폼 제출 후 모달 닫기
+    const filesId = files.map((file) => file.fileName);
+    const { title, desc } = project;
+    const newItem = {
+      dayNumber: 1,
+      title,
+      description: desc,
+      images: filesId,
+    };
+
+    postAssignment.mutate(newItem);
+
+    setProject(initValue);
+    setFiles([]);
+
+    setIsModalOpen(false);
   };
 
   const toggleModal = () => {
@@ -46,12 +81,17 @@ const Schedule = () => {
         </button>
       </div>
 
-      <SlideModal isOpen={isModalOpen} onClose={toggleModal} title="1일차">
+      <SlideModal
+        isOpen={isModalOpen}
+        onClose={toggleModal}
+        title={project.dayNumber}
+      >
         <ScheduleForm
           onSubmit={handleSubmit}
           onChange={handleChange}
           onDesChange={handleDescChange}
           onFileUpLoad={handleFileChange}
+          files={files}
           value={project}
         />
       </SlideModal>

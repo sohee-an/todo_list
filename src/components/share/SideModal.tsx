@@ -4,7 +4,7 @@ interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   children: React.ReactNode;
-  title: string;
+  title: number;
 }
 
 function SlideModal({ isOpen, onClose, children, title }: ModalProps) {

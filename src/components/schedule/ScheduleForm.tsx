@@ -6,6 +6,7 @@ type Props = {
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   onDesChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
   onFileUpLoad: (files: any[]) => void;
+  files: any[];
   value: { title: string; desc: string };
 };
 
@@ -14,6 +15,7 @@ function ScheduleForm({
   onDesChange,
   onChange,
   value,
+  files,
   onFileUpLoad,
 }: Props) {
   return (
@@ -34,7 +36,7 @@ function ScheduleForm({
         <label className="block text-gray-700 text-sm font-bold mb-2">
           파일 업로드
         </label>
-        <FileUpload onFileUpLoad={onFileUpLoad} />
+        <FileUpload files={files} onFileUpLoad={onFileUpLoad} />
       </div>
       <div className="mb-4">
         <label className="block text-gray-700 text-sm font-bold mb-2">
