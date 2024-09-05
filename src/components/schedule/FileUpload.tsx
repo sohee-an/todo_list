@@ -1,19 +1,22 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useMutation } from '@tanstack/react-query';
 import { fetchDeleteImage, fetchPostImage } from '../../api/image/image';
 
 type Props = {
-  onFileUpLoad: (files: any[]) => void;
+  onFileUpLoad: (files: any) => void;
+  isEdit: boolean;
+  onEditeFiles: (deleteId: string) => void;
   files: any[];
 };
 
-function FileUpload({ onFileUpLoad, files }: Props) {
+function FileUpload({ onFileUpLoad, files, isEdit, onEditeFiles }: Props) {
   const { mutate } = useMutation({
     mutationFn: fetchPostImage,
     onSuccess: (data) => {
-      const newFiles = [...files, data];
-      onFileUpLoad(newFiles);
+      console.log('data', data);
+
+      onFileUpLoad(data);
     },
     onError: (error: any) => {
       console.error('Error uploading file:', error.message);
@@ -52,8 +55,13 @@ function FileUpload({ onFileUpLoad, files }: Props) {
     },
   });
 
-  const removeFile = (fileName: string) => {
-    deleteMutation.mutate(fileName);
+  const removeFile = (file: any) => {
+   
+    if (isEdit) {
+      onEditeFiles(file.fileName);
+    } else {
+      deleteMutation.mutate(file.fileName);
+    }
   };
 
   return (
@@ -86,7 +94,7 @@ function FileUpload({ onFileUpLoad, files }: Props) {
               </span>
               <button
                 type="button"
-                onClick={() => removeFile(file.fileName)}
+                onClick={() => removeFile(file)}
                 className="ml-4 text-white bg-red-400 py-1 px-2 rounded-lg"
               >
                 x

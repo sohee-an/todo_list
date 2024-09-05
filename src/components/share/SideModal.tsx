@@ -29,7 +29,7 @@ function SlideModal({ isOpen, onClose, children }: ModalProps) {
         }`}
         onClick={handleBackgroundClick}
       >
-        <div className="p-4 flex justify-between items-center border-b">
+        <div className="p-4 flex justify-end items-center border-b">
           {/* <h2 className="text-xl font-bold">{title}</h2> */}
           <button
             onClick={onClose}

@@ -5,9 +5,11 @@ type Props = {
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   onDesChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
-  onFileUpLoad: (files: any[]) => void;
+  onFileUpLoad: (files: any) => void;
+  onEditeFiles: (deleteId:string)=> void;
   files: any[];
   value: { desc: string };
+  isEdit: boolean;
 };
 
 function ScheduleForm({
@@ -16,6 +18,8 @@ function ScheduleForm({
   value,
   files,
   onFileUpLoad,
+  isEdit,
+  onEditeFiles
 }: Props) {
   return (
     <form onSubmit={onSubmit} className="bg-white p-8 rounded-lg shadow-lg">
@@ -35,7 +39,7 @@ function ScheduleForm({
         <label className="block text-gray-700 text-sm font-bold mb-2">
           파일 업로드
         </label>
-        <FileUpload files={files} onFileUpLoad={onFileUpLoad} />
+        <FileUpload onEditeFiles={onEditeFiles}isEdit={isEdit} files={files} onFileUpLoad={onFileUpLoad} />
       </div>
       <div className="mb-4">
         <label className="block text-gray-700 text-sm font-bold mb-2">
@@ -55,7 +59,7 @@ function ScheduleForm({
           type="submit"
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
         >
-          생성
+          {isEdit ? '수정' : '생성'}
         </button>
       </div>
     </form>
