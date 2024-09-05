@@ -38,7 +38,7 @@ function SlideModal({ isOpen, onClose, children }: ModalProps) {
             닫기
           </button>
         </div>
-        <section className="p-4">{children}</section>
+        <section className="p-4 overflow-y-auto">{children}</section>
       </div>
     </div>
   );
