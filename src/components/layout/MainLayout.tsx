@@ -1,22 +1,21 @@
-import {  useState } from 'react';
-import { Outlet,  } from 'react-router-dom';
+import { useState } from 'react';
+import { Outlet } from 'react-router-dom';
 import { FaCalendarDays } from 'react-icons/fa6';
 import { FaHouse } from 'react-icons/fa6';
 import { FaGear } from 'react-icons/fa6';
 import useAuth from '../../hook/useAuth';
 
 const MainLayout = () => {
-  
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  useAuth()
+  // useAuth()
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen bg-red-200">
       <nav
         className={`bg-gray-800 text-white ${
           isSidebarOpen ? 'w-64' : 'w-16'
@@ -57,6 +56,14 @@ const MainLayout = () => {
           <li className="mb-2">
             <a href="/my" className="block px-4 py-2 rounded hover:bg-gray-700">
               {isSidebarOpen ? '내 할일' : <FaCalendarDays />}
+            </a>
+          </li>
+          <li className="mb-2">
+            <a
+              href="/schedule"
+              className="block px-4 py-2 rounded hover:bg-gray-700"
+            >
+              {isSidebarOpen ? '파일 업로드' : <FaCalendarDays />}
             </a>
           </li>
         </ul>

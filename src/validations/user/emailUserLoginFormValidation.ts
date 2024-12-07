@@ -23,17 +23,12 @@ import { yupResolver } from '@hookform/resolvers/yup';
 // src / utils / validation.ts;
 import * as yup from 'yup';
 
-export const emailUserFormSchema = yup.object({
+export const emailUserLoginFormSchema = yup.object({
   email: yup
     .string()
     .required('이메일을 입력해주세요')
     .email('올바른 이메일 형식이 아닙니다'),
-   nickname: yup
-    .string()
-    .required('닉네임을 입력해주세요')
-   
-    .min(2, '최소 2자 이상 입력해주세요')
-    .max(8, '최대 8자를 입력해주세요'),
+
   password: yup
     .string()
     .required('비밀번호를 입력해주세요')
@@ -45,4 +40,4 @@ export const emailUserFormSchema = yup.object({
     .max(20, '최대 20자를 입력해주세요'),
 });
 
-export const getEmailUserFormSchema = () => yupResolver(emailUserFormSchema);
+export const getEmailUserLoginFormSchema = () => yupResolver(emailUserLoginFormSchema);

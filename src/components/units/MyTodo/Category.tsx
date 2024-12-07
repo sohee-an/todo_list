@@ -1,49 +1,32 @@
 import React, { SetStateAction, Dispatch, useState } from 'react';
 import CategoryButton from '../../share/CategoryButton';
 import Todo from './Todo';
-import { db } from '../../../config/firebase';
-import { doc, getDoc, updateDoc, arrayUnion, setDoc } from 'firebase/firestore';
-import { uid } from 'uid';
 import SidePanel from '../../share/SidePanel';
+import useUserId from '../../../hook/useUserId';
+import { TCategory, TTodo } from '../../../types/TodoTypes';
+import FirebaseActions from '../../../api/Todo';
+import { uid } from 'uid';
 
-type NewType = {
-  item: {
-    cid: string;
-    memo: string;
-    title: string;
-    item: TTodo[] | [];
-  };
+type Props = {
+  item: TCategory;
   onClick: () => void;
   setRefetch: Dispatch<SetStateAction<boolean>>;
 };
 
-type Props = NewType;
-
-export type TTodo = {
-  id: string;
-  memo: string;
-  title: string;
-  selected: boolean;
-};
-
 const Category = ({ item, onClick, setRefetch }: Props) => {
   const [isPanelVisible, setIsPanelVisible] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<any>({});
+  const [selectedTodo, setSelectedTodo] = useState<TTodo>();
   const [inputState, setInputState] = useState(false);
-
   const [value, setValue] = useState('');
-  const handleRefetch = () => {};
+  const userId = useUserId();
+
+ 
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setInputState(false);
     setValue('');
-    const userId = localStorage.getItem('userId');
-
-    if (!userId) {
-      alert('로그인을 해주세요');
-      return;
-    }
+    if (!userId) return;
 
     const newTodo = {
       id: uid(),
@@ -52,73 +35,30 @@ const Category = ({ item, onClick, setRefetch }: Props) => {
       selected: false,
     };
 
-    const docRef = doc(db, 'todos', userId);
-    const docSnap = await getDoc(docRef);
-
     try {
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        const categoryIndex = data.todos.findIndex(
-          (cat: any) => cat.cid === item.cid
-        );
-
-        if (categoryIndex > -1) {
-          const updatedTodos = [...data.todos];
-          const category = updatedTodos[categoryIndex];
-          if (!category.item) {
-            category.item = [];
-          }
-          category.item.push(newTodo);
-
-          await updateDoc(docRef, {
-            todos: updatedTodos,
-          });
-        } else {
-          await updateDoc(docRef, {
-            todos: arrayUnion({
-              ...item,
-              item: [newTodo],
-            }),
-          });
-        }
-      } else {
-        await setDoc(docRef, {
-          todos: [
-            {
-              ...item,
-              item: [newTodo],
-            },
-          ],
-        });
-      }
+      await FirebaseActions.updateTodo(userId, item.cid, newTodo);
       setRefetch((pre) => !pre);
     } catch (error) {
       console.error('Error updating document: ', error);
     }
   };
+
   const handleClick = () => {
     setInputState(true);
   };
+
   const handleChange = (value: string) => {
     setValue(value);
   };
 
   const handleCheckboxChange = async (checkboxValue: boolean, id: string) => {
-    const userId = localStorage.getItem('userId');
-
-    if (!userId) {
-      alert('로그인을 해주세요');
-      return;
-    }
-
-    const docRef = doc(db, 'todos', userId);
-    const docSnap = await getDoc(docRef);
+    if (!userId) return;
 
     try {
-      if (docSnap.exists()) {
-        const data = docSnap.data();
+      const data = await FirebaseActions.getDocument(userId);
+      if (data) {
         const categoryIndex = data.todos.findIndex(
-          (cat: any) => cat.cid === item.cid
+          (cat: TCategory) => cat.cid === item.cid
         );
 
         if (categoryIndex > -1) {
@@ -131,7 +71,7 @@ const Category = ({ item, onClick, setRefetch }: Props) => {
           if (todoIndex > -1) {
             category.item[todoIndex].selected = checkboxValue;
 
-            await updateDoc(docRef, {
+            await FirebaseActions.updateDocument(userId, {
               todos: updatedTodos,
             });
             setRefetch((pre) => !pre);
@@ -148,38 +88,31 @@ const Category = ({ item, onClick, setRefetch }: Props) => {
     updateMemo: string,
     id: string
   ) => {
-    const userId = localStorage.getItem('userId');
-    if (!userId) {
-      return;
-    }
+    if (!userId) return;
 
-    console.log('up', updateTitle);
-    console.log('memo', updateMemo);
-
-    const docRef = doc(db, 'todos', userId);
-    const docSnap = await getDoc(docRef);
-
-    if (docSnap.exists()) {
-      const data = docSnap.data();
-      const categoryIndex = data.todos.findIndex(
-        (cat: any) => cat.cid === item.cid
-      );
-
-      if (categoryIndex > -1) {
-        const todoIndex = data.todos[categoryIndex].item.findIndex(
-          (todo: TTodo) => todo.id === id
+    try {
+      const data = await FirebaseActions.getDocument(userId);
+      if (data) {
+        const categoryIndex = data.todos.findIndex(
+          (cat: TCategory) => cat.cid === item.cid
         );
 
-        if (todoIndex > -1) {
-          data.todos[categoryIndex].item[todoIndex].title = updateTitle;
-          data.todos[categoryIndex].item[todoIndex].memo = updateMemo;
+        if (categoryIndex > -1) {
+          const todoIndex = data.todos[categoryIndex].item.findIndex(
+            (todo: TTodo) => todo.id === id
+          );
 
-          await updateDoc(docRef, {
-            todos: data.todos,
-          });
-          setRefetch((pre) => !pre);
+          if (todoIndex > -1) {
+            data.todos[categoryIndex].item[todoIndex].title = updateTitle;
+            data.todos[categoryIndex].item[todoIndex].memo = updateMemo;
+
+            await FirebaseActions.updateDocument(userId, { todos: data.todos });
+            setRefetch((pre) => !pre);
+          }
         }
       }
+    } catch (error) {
+      console.error('Error saving todo: ', error);
     }
   };
 
@@ -190,49 +123,19 @@ const Category = ({ item, onClick, setRefetch }: Props) => {
   const handleEdit = (id: string) => {
     const todoToEdit = item.item.find((todo: TTodo) => todo.id === id);
     if (todoToEdit) {
-      console.log('dd', todoToEdit);
-      setSelectedCategory(todoToEdit);
+      setSelectedTodo(todoToEdit);
       setIsPanelVisible(true);
     }
   };
 
   const handleDelete = async (id: string) => {
-    const userId = localStorage.getItem('userId');
-
-    if (!userId) {
-      alert('로그인을 해주세요');
-      return;
-    }
-
-    const docRef = doc(db, 'todos', userId);
-    const docSnap = await getDoc(docRef);
+    if (!userId) return;
 
     try {
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        const categoryIndex = data.todos.findIndex(
-          (cat: any) => cat.cid === item.cid
-        );
-
-        if (categoryIndex > -1) {
-          const updatedTodos = [...data.todos];
-          const category = updatedTodos[categoryIndex];
-          const todoIndex = category.item.findIndex(
-            (todo: TTodo) => todo.id === id
-          );
-
-          if (todoIndex > -1) {
-            category.item.splice(todoIndex, 1);
-
-            await updateDoc(docRef, {
-              todos: updatedTodos,
-            });
-            setRefetch((pre) => !pre);
-          }
-        }
-      }
+      await FirebaseActions.deleteTodo(userId, item.cid, id);
+      setRefetch((pre) => !pre);
     } catch (error) {
-      console.error('Error deleting document: ', error);
+      console.error('Error deleting todo: ', error);
     }
   };
 
@@ -252,9 +155,8 @@ const Category = ({ item, onClick, setRefetch }: Props) => {
           </form>
         )}
       </div>
-
       <div>
-        {item.item &&
+        {!!item.item &&
           item.item.map((todo: TTodo) => {
             return (
               <Todo
@@ -267,14 +169,16 @@ const Category = ({ item, onClick, setRefetch }: Props) => {
             );
           })}
       </div>
-      <SidePanel
-        formTitle="할일 수정"
-        isVisible={isPanelVisible}
-        onClose={handlePanelClose}
-        category={selectedCategory}
-        setSelectedTodo={true}
-        onTodoSave={handleTodoSave}
-      />
+      {!!selectedTodo && (
+        <SidePanel
+          formTitle="할일 수정"
+          isVisible={isPanelVisible}
+          onClose={handlePanelClose}
+          item={selectedTodo}
+          setSelectedTodo={true}
+          onTodoSave={handleTodoSave}
+        />
+      )}
     </div>
   );
 };
